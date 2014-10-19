@@ -10,35 +10,46 @@ app = Flask(__name__)
 app.secret_key = os.urandom(24)
 print app.secret_key
 
-DATABASE = '/tmp/flaskr.db'
-DEBUG = True
-SECRET_KEY = 'development key'
-USERNAME = 'admin'
-PASSWORD = 'default'
-
-def init_db():
-    with closing(connect_db()) as db:
-        with app.open_resource('schema.sql') as f:
-            db.cursor().executescript(f.read())
-        db.commit()
+app.config.update(dict(
+    DATABASE=os.path.join(app.root_path, 'eh.db'),
+    DEBUG=True,
+    SECRET_KEY='development key',
+    USERNAME='admin',
+    PASSWORD='default'
+))
 
 def connect_db():
     return sqlite3.connect(app.config['DATABASE'])
 
+@app.before_request
+def before_request():
+    g.db = connect_db()
+
+@app.teardown_request
+def teardown_request(exception):
+    g.db.close()
+
 @app.route('/')
-def index():
-    if 'username' in session:
+def welcome():
+    if session.get('logged_in'):
         return render_template('dashboard.html')
     else:
         return redirect(url_for('login'))
 
-@app.route('/login/', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     # 检查数据库，先略过。
     if request.method == 'POST':
         session['username'] = request.form['username']
-        return redirect(url_for('index'));
+        session['logged_in'] = True;
+        return redirect(url_for('welcome'));
     return render_template('welcome.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    return redirect(url_for('login'))
+    
 
 @app.route('/hello')
 def hello():
@@ -52,7 +63,7 @@ def show_user_profile(username):
 def show_post(post_id):
     return '你投送了 %d' % post_id
 
-@app.route('/1/about/')
+@app.route('/1/about')
 def show_about_page():
     return 'This is the ABOUT page.'
 
