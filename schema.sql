@@ -7,6 +7,10 @@ create table user (
     # 用户名
     password text not null,
     # 密码
+    honor integer default 0,
+    # 个人信誉度
+    complain text,
+    # 投诉内容和时间
     nicecard integer not null default 0,
     # 好人卡数量
     noticenum integer not null default 0,
