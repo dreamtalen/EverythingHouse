@@ -36,12 +36,27 @@ def welcome():
     else:
         return redirect(url_for('login'))
 
+# 简化sqlite3的查询方式。
+def query_db(query, args=(), one=False):
+    cur = g.db.execute(query, args)
+    rv = [dict((cur.description[idx][0], value)
+               for idx, value in enumerate(row)) for row in cur.fetchall()]
+    return (rv[0] if rv else None) if one else rv
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     # 检查数据库，先略过。
     if request.method == 'POST':
         session['username'] = request.form['username']
         session['logged_in'] = True;
+        user = query_db('select * from user where username = ?', request.form['username'], one=True)
+        if user is None:
+            print '没有这个用户！'
+        else:
+            if reque.form['password'] != user[password]:
+                print '密码错误！'
+        # g.db.execute('insert into user (username, password) values (?, ?)', [request.form['username'], request.form['password']])
+        # g.db.commit()
         return redirect(url_for('welcome'));
     return render_template('welcome.html')
 

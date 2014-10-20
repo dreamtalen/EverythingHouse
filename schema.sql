@@ -12,7 +12,7 @@ create table user (
     rubbish text
 );
 
-drop table if exists item
+drop table if exists item;
 create table item (
     id integer primary key autoincrement,
     username text not null,
@@ -21,7 +21,7 @@ create table item (
     is_anonymity integer default 0
 );
 
-drop table if exists history
+drop table if exists history;
 create table history (
     id integer primary key autoincrement,
     username_1 text not null,
