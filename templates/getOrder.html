@@ -1,12 +1,9 @@
 <html>
 <head>
-<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
 </head>
 <body>
   <table class="table table-bordered table-hover">
-    <title>
-      Order List
-    </title>
+    <caption><h3><b>订单列表</b></h3></caption>
     <thead>
       <th>编号</th>
       <th>内容说明</th>
@@ -16,36 +13,23 @@
       <th>操作</th>
     </thead>
     <tbody>
-      <tr class="active">
-        <th>正在进行中</th>
-        <th>正在进行中</th>
-        <th>正在进行中</th>
-        <th>正在进行中</th>
-        <th>正在进行中</th>
-        <th id="operation">正在进行中</th>
-      </tr>
-      <tr class="success">
-        <th>可交易状态</th>
-        <th>可交易状态</th>
-        <th>可交易状态</th>
-        <th>可交易状态</th>
-        <th>可交易状态</th>
-        <th>可交易状态</th>
-      </tr>
-      <tr class="warning">
-        <th>正在交易</th>
-        <th>正在交易</th>
-        <th>正在交易</th>
-        <th>正在交易</th>
-        <th>正在交易</th>
-        <th id="1">正在交易</th>
-      </tr>
+      {% for order in orders %}
+        {% if order.state == 0 %}
+          <tr class="success">
+        {% elif order.state == 1 %}
+          <tr class="warning">
+        {% else %}
+          <tr class="active">
+        {% endif %}
+          </tr>
+        <th>{{ order.id }}</th>
+        <th>{{ order.content }}</th>
+        <th>{{ order.username }}</th>
+        <th>{{ order.time }}</th>
+        <th>{{ order.position }}</th>
+        <th><span class='label label-success'><span class='glyphicon glyphicon-usd'></span> 交易</span>&nbsp;&nbsp;&nbsp;<span class='label label-info'><span class='glyphicon glyphicon-envelope'></span> 私信</span>&nbsp;&nbsp;&nbsp;<span class='label label-danger'><span class='glyphicon glyphicon-trash'></span> 删除</span></th>
+      {% endfor %}
     </tbody>
   </table>
 </body>
-  <script type="text/javascript">
-    $(document).ready(function() {
-      $("#1").innerHTML = "<span class='label label-success'><span class='glyphicon glyphicon-usd'></span> 交易</span>&nbsp;&nbsp;&nbsp;<span class='label label-Info'><span class='glyphicon glyphicon-envelope'></span> 私信</span>";
-    });
-  </script>
 </html>

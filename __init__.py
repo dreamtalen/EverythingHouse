@@ -86,9 +86,9 @@ def postOrder():
     if session.get('logged_in'):
         if request.method == 'POST':
             if request.form.get('is_anonymity'):
-                g.db.execute('insert into item (username, content, is_anonymity) values (?, ?, ?)', [session['username'], request.form['content'], request.form['is_anonymity']])
+                g.db.execute('insert into item (username, content, is_anonymity, position, time) values (?, ?, ?, ?, ?)', [session['username'], request.form['content'], request.form['is_anonymity'], request.form['position'], request.form['time']])
             else:
-                g.db.execute('insert into item (username, content) values (?, ?)', [session['username'], request.form['content']])
+                g.db.execute('insert into item (username, content, position, time) values (?, ?, ?, ?)', [session['username'], request.form['content'], request.form['position'], request.form['time']])
             g.db.commit()
             return redirect(url_for('welcome'))
         return render_template('postOrder.html')
@@ -98,7 +98,8 @@ def postOrder():
 # 接单表。
 @app.route('/get')
 def getOrder():
-    return render_template('getOrder.html')
+    orders = query_db('select * from item')
+    return render_template('getOrder.html', orders = orders)
 
 # 活动页面。
 @app.route('/event')

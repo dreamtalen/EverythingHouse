@@ -9,6 +9,14 @@
       document.write("<div id='loading' style='z-index:1035;padding:5px 0 5px 9px;background:#c44;left:0;top:0;width:90px;color:#fff;position:fixed;'>正在加载...</div>")
       setTimeout("document.getElementById('loading').innerHTML = '加载失败，网络错误！';", 3000)
     </script>
+    <script>
+      function loadPage(page) {
+        document.getElementById('loading').innerHTML = "正在加载...";
+        $('#loading').show();
+        document.getElementById('loading').innerHTML = "加载完成！";
+        setTimeout("$('#loading').slideUp();", 1000);
+      };
+    </script>
     <style type="text/css">
       .navbar-header {
         padding-left: 100px;
@@ -18,15 +26,6 @@
         padding-top: 55px;
       }
     </style>
-    <script>
-      function loadPage(page) {
-        document.getElementById('loading').innerHTML = "正在加载...";
-        $('#loading').show();
-        $('#PAGE').load(page);
-        document.getElementById('loading').innerHTML = "加载完成！";
-        setTimeout("$('#loading').slideUp();", 1000);
-      }
-    </script>
   </head>
   <body>
 
@@ -43,19 +42,19 @@
         </div>
         <div class="collapse navbar-collapse" id="menu_list">
           <ul class="nav navbar-nav">
-            <li onclick="loadPage('{{ url_for('homePage') }}')" class="menu_list_items active">
+            <li onclick="loadPage(); $('#PAGE').load('{{ url_for('homePage') }}');loadPage('{{ url_for('homePage') }}')" class="menu_list_items active">
               <a href="#"><span class="glyphicon glyphicon-home"></span> 主页</a>
             </li>
-            <li onclick="loadPage('{{ url_for('postOrder') }}')" class="menu_list_items">
+            <li onclick="loadPage(); $('#PAGE').load('{{ url_for('postOrder') }}');loadPage('{{ url_for('postOrder') }}')" class="menu_list_items">
               <a href="#"><span class="glyphicon glyphicon-send"></span> 投条</a>
             </li>
-            <li onclick="loadPage('{{ url_for('getOrder') }}')" class="menu_list_items">
+            <li onclick="loadPage(); $('#PAGE').load('{{ url_for('getOrder') }}');" class="menu_list_items">
               <a href="#"><span class="glyphicon glyphicon-list-alt"></span> 接单</a>
             </li>
-            <li onclick="loadPage('{{ url_for('eventActivity') }}')" class="menu_list_items">
+            <li onclick="loadPage(); $('#PAGE').load('{{ url_for('eventActivity') }}');" class="menu_list_items">
               <a href="#"><span class="glyphicon glyphicon-star"></span> 活动</a>
             </li>
-            <li onclick="loadPage('{{ url_for('personalSetting') }}')" class="menu_list_items">
+            <li onclick="loadPage(); $('#PAGE').load('{{ url_for('personalSetting') }}');" class="menu_list_items">
               <a href="#"><span class="glyphicon glyphicon-cog"></span> 设定</a>
             </li>
           </ul>

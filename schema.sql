@@ -18,7 +18,7 @@ create table item (
     username text not null,
     content text not null,
     nicecard integer default 0,
-    is_anonymity integer default 0
+    is_anonymity integer default 0,
     state integer default 0,
     time text not null,
     position text not null
