@@ -6,14 +6,11 @@ from flask import *
 
 app = Flask(__name__)
 
-# 生成秘钥
-app.secret_key = os.urandom(24)
-print app.secret_key
-
 app.config.update(dict(
     DATABASE=os.path.join(app.root_path, 'database/eh.db'),
     DEBUG=True,
-    SECRET_KEY='development key',
+    # 生成秘钥
+    SECRET_KEY=os.urandom(24),
     USERNAME='admin',
     PASSWORD='default'
 ))
@@ -46,20 +43,24 @@ def query_db(query, args=(), one=False):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     # 检查数据库，先略过。
+    error = None
     if request.method == 'POST':
-        session['username'] = request.form['username']
-        session['logged_in'] = True;
-        user = query_db('select * from user where username = ?', request.form['username'], one=True)
+        user = query_db('select * from user where username = ?', [request.form['username']], one=True)
         if user is None:
-            print '没有这个用户！'
+            error = u"用户名不存在。"
         else:
-            if reque.form['password'] != user[password]:
-                print '密码错误！'
+            if request.form['password'] != user['password']:
+                error = u"密码不正确。"
+            else:
+                session['username'] = request.form['username']
+                session['logged_in'] = True;
+                return redirect(url_for('welcome'));
+        # 注册新用户。
         # g.db.execute('insert into user (username, password) values (?, ?)', [request.form['username'], request.form['password']])
         # g.db.commit()
-        return redirect(url_for('welcome'));
-    return render_template('welcome.html')
+    return render_template("welcome.html", error = error)
 
+# 退出登录。
 @app.route('/logout')
 def logout():
     session.pop('logged_in', None)

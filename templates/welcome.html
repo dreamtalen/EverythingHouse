@@ -32,6 +32,12 @@
                 </label>
               </div>
               <button class="btn btn-lg btn-primary btn-block" type="submit">登 陆</button>
+              {% if error %}
+                  <br />
+                <div class="alert alert-danger" role="alert">
+                  <p><strong>错误: </strong>{{ error }}</p>
+                </div>
+              {% endif %}
             </form>
           </div>
         </div>
