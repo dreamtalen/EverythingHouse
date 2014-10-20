@@ -2,6 +2,15 @@
 <head>
 </head>
 <body>
+  <div class="page-header">
+    <h1><b>接单</b> <small>>>> Do one thing good daily.</small></h1>
+  </div>
+  <div class="input-group col-xs-10 col-sm-8 col-md-6 col-lg-4 pull-right">
+      <input type="text" class="form-control">
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="button">搜索！</button>
+      </span>
+    </div>
   <table class="table table-bordered table-hover">
     <caption><h3><b>订单列表</b></h3></caption>
     <thead>
@@ -24,7 +33,11 @@
           </tr>
         <th>{{ order.id }}</th>
         <th>{{ order.content }}</th>
-        <th>{{ order.username }}</th>
+        {% if order.is_anonymity == 0 %}
+          <th>{{ order.username }}</th>
+        {% else %}
+          <th>匿名</th>
+        {% endif %}
         <th>{{ order.time }}</th>
         <th>{{ order.position }}</th>
         <th><span class='label label-success'><span class='glyphicon glyphicon-usd'></span> 交易</span>&nbsp;&nbsp;&nbsp;<span class='label label-info'><span class='glyphicon glyphicon-envelope'></span> 私信</span>&nbsp;&nbsp;&nbsp;<span class='label label-danger'><span class='glyphicon glyphicon-trash'></span> 删除</span></th>

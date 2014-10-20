@@ -43,6 +43,9 @@
   </script>
 </head>
 <body>
+  <div class="page-header">
+    <h1><b>投条</b> <small>>>> Everything You Want!</small></h1>
+  </div>
   <button type="button" action class="btn btn-primary" data-toggle="modal" data-target="#postOrder">投条</button>
   <form method="POST" action="{{ url_for('postOrder') }}">
     <div class="modal fade" id="postOrder" tabindex="-1" role="dialog" aria-labelledby="postOrderModal" aria-hidden="true">
@@ -68,7 +71,7 @@
                     <span class="input-group-btn">
                       <button class="btn btn-default" onclick="getTime()" type="button"><span class="glyphicon glyphicon-time"></span> 时间</button>
                     </span>
-                    <input type="text" id="time" name="time "required class="form-control">
+                    <input type="text" id="time" name="time" required class="form-control">
                   </div>
                 </div>
               </div>
