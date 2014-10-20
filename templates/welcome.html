@@ -30,12 +30,16 @@
                 <label>
                   <input type="checkbox" value="remember-me" checked="1"> 记住我
                 </label>
+                <div class="pull-right">
+                  <span class="glyphicon glyphicon-user"></span>
+                  <a href="#" data-toggle="modal" data-target="#register"><span class="label label-default">点此注册</span></a>
+                </div>
               </div>
               <button class="btn btn-lg btn-primary btn-block" type="submit">登 陆</button>
-              {% if error %}
+              {% if error_l %}
                   <br />
                 <div class="alert alert-danger" role="alert">
-                  <p><strong>错误: </strong>{{ error }}</p>
+                  <p><strong>错误: </strong>{{ error_l }}</p>
                 </div>
               {% endif %}
             </form>
@@ -43,6 +47,34 @@
         </div>
       </div>
     </div>
+
+    <div class="modal fade" id="register" tabindex="-1" role="dialog" aria-labelledby="registerModal" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+            <h4 class="modal-title" id="registerModal">创建新用户</h4>
+          </div>
+          <div class="modal-body">
+            <form class="form-signin" action="{{ url_for('register') }}" method="POST" role="form" style="max-width:300px; margin: 0 auto;">
+              <h3 class="form-signin-heading"><span class="glyphicon glyphicon-hand-right"></span> Enter</h3>
+              <input type="text" name="username" class="form-control" placeholder="用户名" required autofocus>
+              <input type="password" name="password" class="form-control" placeholder="密码" required>
+              <br />
+              <button class="btn btn-lg btn-primary btn-block" type="submit">注 册</button>
+              {% if error_r %}
+                  <br />
+                <div class="alert alert-danger" role="alert">
+                  <p><strong>错误: </strong>{{ error_r }}</p>
+                </div>
+              {% endif %}
+              <br />
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <footer>
       
     </footer>
@@ -63,5 +95,10 @@
         document.getElementById('loading').innerHTML = "加载完成！";
         setTimeout("$('#loading').slideToggle();", 1000);
     });
+  </script>
+  <script>
+    {% if error_r %}
+      $('#register').modal('toggle');
+    {% endif %}
   </script>
 </html>

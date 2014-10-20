@@ -42,15 +42,14 @@ def query_db(query, args=(), one=False):
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    # 检查数据库，先略过。
-    error = None
+    error_l = None
     if request.method == 'POST':
         user = query_db('select * from user where username = ?', [request.form['username']], one=True)
         if user is None:
-            error = u"用户名不存在。"
+            error_l = u"用户名不存在。"
         else:
             if request.form['password'] != user['password']:
-                error = u"密码不正确。"
+                error_l = u"密码不正确。"
             else:
                 session['username'] = request.form['username']
                 session['logged_in'] = True;
@@ -58,7 +57,22 @@ def login():
         # 注册新用户。
         # g.db.execute('insert into user (username, password) values (?, ?)', [request.form['username'], request.form['password']])
         # g.db.commit()
-    return render_template("welcome.html", error = error)
+    return render_template("welcome.html", error_l = error_l)
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    error_r = None
+    if request.method == 'POST':
+        user = query_db('select * from user where username = ?', [request.form['username']], one=True)
+        if user is not None:
+            error_r = u"用户名重复。"
+        else:
+            # 注册新用户。
+            g.db.execute('insert into user (username, password) values (?, ?)', [request.form['username'], request.form['password']])
+            g.db.commit()
+            return redirect(url_for('welcome'));
+    return render_template("welcome.html", error_r = error_r)
+
 
 # 退出登录。
 @app.route('/logout')
