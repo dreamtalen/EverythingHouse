@@ -1,5 +1,46 @@
 <html>
 <head>
+  <script type="text/javascript">
+    x = document.getElementById('position');
+    y = document.getElementById('time');
+    function getPosition () {
+      // x.toggleClass("disabled");
+      if (navigator.geolocation) {
+        x.value = "加载中..."
+        navigator.geolocation.getCurrentPosition(showPosition, showError);
+      }
+      else {
+        x.value = "浏览器不支持。";
+      }
+    }
+    function showError(error) {
+      switch(error.code) {
+      case error.PERMISSION_DENIED:
+        x.value="没有足够权限获得定位。"
+        break;
+      case error.POSITION_UNAVAILABLE:
+        x.value="网络错误，无法加载数据。"
+        break;
+      case error.TIMEOUT:
+        x.value="获取定位超时。"
+        break;
+      case error.UNKNOWN_ERROR:
+        x.value="发生了未知错误。"
+        break;
+      }
+    }
+    function showPosition (position) {
+      XMLhttpReq = new XMLHttpRequest();
+      alert("OK");
+      url = "https://maps.google.com/maps/api/geocode/json?latlng="+position.coords.latitude+","+position.coords.longitude+"&sensor=true";
+      x.value = XMLhttpReq.open("GET", url, true);
+      // x.toggleClass("disabled");
+    }
+    function getTime () {
+      date = new Date();
+      y.value = date.getFullYear()+"年"+date.getMonth()+"月"+date.getDate()+"日"+date.getHours()+"时"+date.getMinutes()+"分";
+    }
+  </script>
 </head>
 <body>
   <button type="button" action class="btn btn-primary" data-toggle="modal" data-target="#postOrder">投条</button>
@@ -12,26 +53,28 @@
             <h4 class="modal-title" id="postOrderModal">投条 - 你想做啥？</h4>
           </div>
           <div class="modal-body">
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-xs-6 col-sm-6 col-md-6">
+                  <div class="input-group">
+                    <span class="input-group-btn">
+                      <button onclick="getPosition()" class="btn btn-default" type="button"><span class="glyphicon glyphicon-map-marker"></span> 地点</button>
+                    </span>
+                    <input type="text" id="position" name="position" required class="form-control">
+                  </div>
+                </div>
+                <div class="col-xs-6 col-sm-6 col-md-6">
+                  <div class="input-group">
+                    <span class="input-group-btn">
+                      <button class="btn btn-default" onclick="getTime()" type="button"><span class="glyphicon glyphicon-time"></span> 时间</button>
+                    </span>
+                    <input type="text" id="time" name="time "required class="form-control">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <br />
             <textarea autofocus name="content" class="form-control" rows="3" placeholder="请随意输入任何你想要的一切！" style="resize: None"></textarea>
-          <br />
-          <div class="row">
-            <div class="col-xs-6 col-md-5 col-md-offset-1">
-              <div class="input-group">
-                <span class="input-group-btn">
-                  <button class="btn btn-default" type="button">地点</button>
-                </span>
-                <input type="text" class="form-control">
-              </div>
-            </div>
-            <div class="col-xs-6 col-md-5">
-              <div class="input-group">
-                <span class="input-group-btn">
-                  <button class="btn btn-default" type="button">时间</button>
-                </span>
-                <input type="text" class="form-control">
-              </div>
-            </div>
-          </div>
           <div class="checkbox">
             <label>
               <input name="is_anonymity" value="1" type="checkbox">匿名提交

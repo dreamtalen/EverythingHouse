@@ -36,6 +36,12 @@ create table item (
     # 额外需要支付的好人卡
     is_anonymity integer default 0,
     # 是否是匿名发布
+    state integer default 0,
+    # 交易状态，新单子、交易中、执行中
+    time text not null,
+    # 生成时间
+    position text not null
+    # 地点
 );
 
 drop table if exists history;

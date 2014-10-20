@@ -19,6 +19,9 @@ create table item (
     content text not null,
     nicecard integer default 0,
     is_anonymity integer default 0
+    state integer default 0,
+    time text not null,
+    position text not null
 );
 
 drop table if exists history;

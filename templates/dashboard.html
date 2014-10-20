@@ -44,32 +44,32 @@
         <div class="collapse navbar-collapse" id="menu_list">
           <ul class="nav navbar-nav">
             <li onclick="loadPage('{{ url_for('homePage') }}')" class="menu_list_items active">
-              <a href="#">主页</a>
+              <a href="#"><span class="glyphicon glyphicon-home"></span> 主页</a>
             </li>
             <li onclick="loadPage('{{ url_for('postOrder') }}')" class="menu_list_items">
-              <a href="#">投条</a>
+              <a href="#"><span class="glyphicon glyphicon-send"></span> 投条</a>
             </li>
             <li onclick="loadPage('{{ url_for('getOrder') }}')" class="menu_list_items">
-              <a href="#">接单</a>
+              <a href="#"><span class="glyphicon glyphicon-list-alt"></span> 接单</a>
             </li>
             <li onclick="loadPage('{{ url_for('eventActivity') }}')" class="menu_list_items">
-              <a href="#">活动</a>
+              <a href="#"><span class="glyphicon glyphicon-star"></span> 活动</a>
             </li>
             <li onclick="loadPage('{{ url_for('personalSetting') }}')" class="menu_list_items">
-              <a href="#">设定</a>
+              <a href="#"><span class="glyphicon glyphicon-cog"></span> 设定</a>
             </li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">账号：{{ session['username'] }}<span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
-                <li><a href="#">个人通知 <span class="badge">{{ user['noticenum'] }}</span></a></li>
-                <li data-toggle="modal" data-target="#draft"><a href="#">草稿本</a></li>
-                <li><a href="#">垃圾筒</a></li>
+                <li><a href="#"><span class="glyphicon glyphicon-bell"></span>个人通知 <span class="badge">{{ user['noticenum'] }}</span></a></li>
+                <li data-toggle="modal" data-target="#draft"><a href="#"><span class="glyphicon glyphicon-book"></span> 草稿本</a></li>
+                <li><a href="#"><span class="glyphicon glyphicon-floppy-remove"></span> 垃圾筒</a></li>
                 <li class="divider"></li>
-                <li><a href="#">好人卡 <span class="badge">{{ user['nicecard'] }}</span></a></li>
+                <li><a href="#"><span class="glyphicon glyphicon-thumbs-up"></span> 好人卡 <span class="badge">{{ user['nicecard'] }}</span></a></li>
                 <li class="divider"></li>
-                <li><a href="{{ url_for('logout') }}">退出</a></li>
+                <li><a href="{{ url_for('logout') }}"><span class="glyphicon glyphicon-off"></span> 退出</a></li>
               </ul>
             </li>
           </ul>

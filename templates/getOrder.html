@@ -1,5 +1,6 @@
 <html>
 <head>
+<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
 </head>
 <body>
   <table class="table table-bordered table-hover">
@@ -21,7 +22,7 @@
         <th>正在进行中</th>
         <th>正在进行中</th>
         <th>正在进行中</th>
-        <th>正在进行中</th>
+        <th id="operation">正在进行中</th>
       </tr>
       <tr class="success">
         <th>可交易状态</th>
@@ -37,9 +38,14 @@
         <th>正在交易</th>
         <th>正在交易</th>
         <th>正在交易</th>
-        <th>正在交易</th>
+        <th id="1">正在交易</th>
       </tr>
     </tbody>
   </table>
 </body>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $("#1").innerHTML = "<span class='label label-success'><span class='glyphicon glyphicon-usd'></span> 交易</span>&nbsp;&nbsp;&nbsp;<span class='label label-Info'><span class='glyphicon glyphicon-envelope'></span> 私信</span>";
+    });
+  </script>
 </html>
