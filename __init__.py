@@ -29,7 +29,8 @@ def teardown_request(exception):
 @app.route('/')
 def welcome():
     if session.get('logged_in'):
-        return render_template('dashboard.html')
+        user = query_db('select * from user where username = ?', [session['username']], one=True)
+        return render_template('dashboard.html', user = user)
     else:
         return redirect(url_for('login'))
 
@@ -73,37 +74,61 @@ def register():
             return redirect(url_for('welcome'));
     return render_template("welcome.html", error_r = error_r)
 
-
 # 退出登录。
 @app.route('/logout')
 def logout():
     session.pop('logged_in', None)
     return redirect(url_for('login'))
 
+# 投条。
+@app.route('/post', methods=['GET', 'POST'])
+def postOrder():
+    if session.get('logged_in'):
+        if request.method == 'POST':
+            if request.form.get('is_anonymity'):
+                g.db.execute('insert into item (username, content, is_anonymity) values (?, ?, ?)', [session['username'], request.form['content'], request.form['is_anonymity']])
+            else:
+                g.db.execute('insert into item (username, content) values (?, ?)', [session['username'], request.form['content']])
+            g.db.commit()
+            return redirect(url_for('welcome'))
+        return render_template('postOrder.html')
+    else:
+        return redirect(url_for('welcome'))
 
-@app.route('/hello')
-def hello():
-    return 'Hello World!!!'
+# 接单表。
+@app.route('/get')
+def getOrder():
+    return render_template('getOrder.html')
 
-@app.route('/1/<username>')
+# 活动页面。
+@app.route('/event')
+def eventActivity():
+    return render_template('eventActivity.html')
+
+# 个人设置页面。
+@app.route('/setting')
+def personalSetting():
+    return render_template('personalSetting.html')
+
+@app.route('/test/<username>')
 def show_user_profile(username):
     return '你好 %s' % username
 
-@app.route('/1/<int:post_id>')
+@app.route('/test/<int:post_id>')
 def show_post(post_id):
     return '你投送了 %d' % post_id
 
-@app.route('/1/about')
-def show_about_page():
-    return 'This is the ABOUT page.'
+@app.route('/location')
+def showLocation():
+    return render_template('showLocation.html')
 
-@app.route('/2/')
-def show_location():
-    return render_template('index.html')
+@app.route('/home')
+def homePage():
+    return render_template('homePage.html')
 
-@app.route('/3/')
-def show_helloHTML():
-    return render_template('hello.html')
+@app.route('/hello')
+def showHello():
+    return render_template('showHello.html')
 
 @app.errorhandler(404)
 def page_not_found(error):

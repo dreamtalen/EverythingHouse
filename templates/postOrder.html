@@ -1,0 +1,51 @@
+<html>
+<head>
+</head>
+<body>
+  <button type="button" action class="btn btn-primary" data-toggle="modal" data-target="#postOrder">投条</button>
+  <form method="POST" action="{{ url_for('postOrder') }}">
+    <div class="modal fade" id="postOrder" tabindex="-1" role="dialog" aria-labelledby="postOrderModal" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+            <h4 class="modal-title" id="postOrderModal">投条 - 你想做啥？</h4>
+          </div>
+          <div class="modal-body">
+            <textarea autofocus name="content" class="form-control" rows="3" placeholder="请随意输入任何你想要的一切！" style="resize: None"></textarea>
+          <br />
+          <div class="row">
+            <div class="col-xs-6 col-md-5 col-md-offset-1">
+              <div class="input-group">
+                <span class="input-group-btn">
+                  <button class="btn btn-default" type="button">地点</button>
+                </span>
+                <input type="text" class="form-control">
+              </div>
+            </div>
+            <div class="col-xs-6 col-md-5">
+              <div class="input-group">
+                <span class="input-group-btn">
+                  <button class="btn btn-default" type="button">时间</button>
+                </span>
+                <input type="text" class="form-control">
+              </div>
+            </div>
+          </div>
+          <div class="checkbox">
+            <label>
+              <input name="is_anonymity" value="1" type="checkbox">匿名提交
+            </label>
+          </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+            <button type="button" class="btn btn-warning" data-dismiss="modal">保存</button>
+            <button type="submit" class="btn btn-primary">提交</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</body>
+</html>
