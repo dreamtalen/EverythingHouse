@@ -11,7 +11,7 @@ app.secret_key = os.urandom(24)
 print app.secret_key
 
 app.config.update(dict(
-    DATABASE=os.path.join(app.root_path, 'eh.db'),
+    DATABASE=os.path.join(app.root_path, 'database/eh.db'),
     DEBUG=True,
     SECRET_KEY='development key',
     USERNAME='admin',
@@ -49,7 +49,7 @@ def login():
 def logout():
     session.pop('logged_in', None)
     return redirect(url_for('login'))
-    
+
 
 @app.route('/hello')
 def hello():
