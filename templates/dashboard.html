@@ -42,7 +42,7 @@
         </div>
         <div class="collapse navbar-collapse" id="menu_list">
           <ul class="nav navbar-nav">
-            <li onclick="loadPage(); $('#PAGE').load('{{ url_for('homePage') }}');" class="menu_list_items active">
+            <li onclick="loadPage(); $('#PAGE').load('{{ url_for('homePage') }}');" class="menu_list_items">
               <a href="#"><span class="glyphicon glyphicon-home"></span> 主页</a>
             </li>
             <li onclick="loadPage(); $('#PAGE').load('{{ url_for('postOrder') }}');" class="menu_list_items">
@@ -62,7 +62,7 @@
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">账号：{{ session['username'] }}<span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
-                <li><a href="#"><span class="glyphicon glyphicon-bell"></span>个人通知 <span class="badge">{{ user['noticenum'] }}</span></a></li>
+                <li><a href="#"><span class="glyphicon glyphicon-bell"></span> 个人通知 <span class="badge">{{ user['noticenum'] }}</span></a></li>
                 <li data-toggle="modal" data-target="#draft"><a href="#"><span class="glyphicon glyphicon-book"></span> 草稿本</a></li>
                 <li><a href="#"><span class="glyphicon glyphicon-floppy-remove"></span> 垃圾筒</a></li>
                 <li class="divider"></li>

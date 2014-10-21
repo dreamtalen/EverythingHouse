@@ -33,8 +33,7 @@
         {% else %}
           <tr class="active">
         {% endif %}
-        <form method="POST" action="{{ url_for('dealOrder') }}">
-          <th name="id">{{ order.id }}</th>
+          <th>{{ order.id }}</input></th>
           <th>{{ order.content }}</th>
           {% if order.is_anonymity == 0 %}
             <th>{{ order.username }}</th>
@@ -43,8 +42,7 @@
           {% endif %}
           <th>{{ order.time }}</th>
           <th>{{ order.position }}</th>
-          <th><button type="submit" name="actionName" value="deal" class='label label-success'><span class='glyphicon glyphicon-usd'></span> 交易</button>&nbsp;&nbsp;&nbsp;<button type="submit" name="actionName" value="letter" class='label label-info'><span class='glyphicon glyphicon-envelope'></span> 私信</button></th>
-        </form>
+          <th><a href="deal/{{ order.id }}" +  class='label label-success'><span class='glyphicon glyphicon-usd'></span> 交易</a>&nbsp;&nbsp;&nbsp;<a href="deal/{{ order.id }}" class='label label-info'><span class='glyphicon glyphicon-envelope'></span> 私信</a></th>
         </tr>
       {% endfor %}
     </tbody>

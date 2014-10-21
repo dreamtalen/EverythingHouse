@@ -102,20 +102,15 @@ def getOrder():
     return render_template('getOrder.html', orders = orders)
 
 # 交易
-@app.route('/deal', methods=['GET', 'POST'])
-def dealOrder():
+@app.route('/deal/<int:post_id>')
+def dealOrder(post_id):
     if session.get('logged_in'):
-        if request.method == 'POST':
-            if request.form["action"] == "deal":
-                print "OK";
-                g.db.execute('update item set state = 1, dealername = ? where id = ?', [session['username'], request.form['id']])
-                username = query_db('select username from item where id = ?', [request.form['id']], one=True)
-                g.db.execute('update user set notification = ? where username = ?', [session['username']+'向你ID为'+request.form['id']+'的订单发起交易，是否同意？###', username])
-            elif request.form["action"] == "letter":
-                pass
-            else:
-                pass
-            g.db.commit()
+        g.db.execute('update item set state = 1, dealername = ? where id = ?', [session['username'], post_id])
+        username = query_db('select username from item where id = ?', [post_id], one=True)
+        print username;
+        post_letter = session['username']+u"向你ID为"+str(post_id)+u"的订单发起交易，是否同意？###"
+        g.db.execute('update user set notification = ? where username = ?', [post_letter, username])
+        g.db.commit()
         return redirect(url_for('getOrder'))
     else:
         return redirect(url_for('welcome'))
