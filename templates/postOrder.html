@@ -30,10 +30,10 @@
       }
     }
     function showPosition (position) {
-      XMLhttpReq = new XMLHttpRequest();
-      alert("OK");
-      url = "https://maps.google.com/maps/api/geocode/json?latlng="+position.coords.latitude+","+position.coords.longitude+"&sensor=true";
-      x.value = XMLhttpReq.open("GET", url, true);
+      url = "https://maps.google.com/maps/api/geocode/json?latlng="+position.coords.latitude+","+position.coords.longitude+"&sensor=false";
+      $.getJSON(url, function(json) {
+        x.value = json.results[0].formatted_address;
+      });
       // x.toggleClass("disabled");
     }
     function getTime () {
@@ -46,7 +46,15 @@
   <div class="page-header">
     <h1><b>投条</b> <small>>>> Everything You Want!</small></h1>
   </div>
-  <button type="button" action class="btn btn-primary" data-toggle="modal" data-target="#postOrder">投条</button>
+
+  <div class="jumbotron" align="center" background="black">
+    <h1><b>万事屋</b></h1>
+    <span class="glyphicon glyphicon-share-alt"></span>
+    <a href="#tips"><span class="label label-default">行为指南</span></a>
+    <h3>欢迎来到万事屋，一处神奇的地方。</h3>
+    <button type="button" action class="btn btn-default btn-lg" data-toggle="modal" data-target="#postOrder">我要投条！</button>
+  </div>
+
   <form method="POST" action="{{ url_for('postOrder') }}">
     <div class="modal fade" id="postOrder" tabindex="-1" role="dialog" aria-labelledby="postOrderModal" aria-hidden="true">
       <div class="modal-dialog">
