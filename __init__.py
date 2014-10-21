@@ -101,6 +101,25 @@ def getOrder():
     orders = query_db('select * from item')
     return render_template('getOrder.html', orders = orders)
 
+# 交易
+@app.route('/deal', methods=['GET', 'POST'])
+def dealOrder():
+    if session.get('logged_in'):
+        if request.method == 'POST':
+            if request.form["action"] == "deal":
+                print "OK";
+                g.db.execute('update item set state = 1, dealername = ? where id = ?', [session['username'], request.form['id']])
+                username = query_db('select username from item where id = ?', [request.form['id']], one=True)
+                g.db.execute('update user set notification = ? where username = ?', [session['username']+'向你ID为'+request.form['id']+'的订单发起交易，是否同意？###', username])
+            elif request.form["action"] == "letter":
+                pass
+            else:
+                pass
+            g.db.commit()
+        return redirect(url_for('getOrder'))
+    else:
+        return redirect(url_for('welcome'))
+
 # 活动页面。
 @app.route('/event')
 def eventActivity():
@@ -110,6 +129,16 @@ def eventActivity():
 @app.route('/setting')
 def personalSetting():
     return render_template('personalSetting.html')
+
+# 主页页面。
+@app.route('/home')
+def homePage():
+    if session.get('logged_in'):
+        post_orders = query_db('select * from item where username = ?', [session['username']])
+        get_orders = query_db('select * from item where dealername = ?', [session['username']])
+        return render_template('homePage.html', post_orders = post_orders, get_orders = get_orders)
+    else:
+        return redirect(url_for('welcome'))
 
 @app.route('/test/<username>')
 def show_user_profile(username):
@@ -122,10 +151,6 @@ def show_post(post_id):
 @app.route('/location')
 def showLocation():
     return render_template('showLocation.html')
-
-@app.route('/home')
-def homePage():
-    return render_template('homePage.html')
 
 @app.route('/hello')
 def showHello():

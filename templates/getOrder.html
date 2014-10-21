@@ -10,7 +10,7 @@
       <input type="text" class="form-control">
       <span class="input-group-btn">
         <button class="btn btn-default" type="button">搜索</button>
-        <button class="btn btn-warning" type="button"><span class="glyphicon glyphicon-refresh"></span> 刷新</button>
+        <button onclick="$('#PAGE').load('{{ url_for('getOrder') }}');" class="btn btn-warning" type="button"><span class="glyphicon glyphicon-refresh"></span> 刷新</button>
       </span>
     </div>
   </div>
@@ -33,17 +33,19 @@
         {% else %}
           <tr class="active">
         {% endif %}
-          </tr>
-        <th>{{ order.id }}</th>
-        <th>{{ order.content }}</th>
-        {% if order.is_anonymity == 0 %}
-          <th>{{ order.username }}</th>
-        {% else %}
-          <th>匿名</th>
-        {% endif %}
-        <th>{{ order.time }}</th>
-        <th>{{ order.position }}</th>
-        <th><span class='label label-success'><span class='glyphicon glyphicon-usd'></span> 交易</span>&nbsp;&nbsp;&nbsp;<span class='label label-info'><span class='glyphicon glyphicon-envelope'></span> 私信</span>&nbsp;&nbsp;&nbsp;<span class='label label-danger'><span class='glyphicon glyphicon-trash'></span> 删除</span></th>
+        <form method="POST" action="{{ url_for('dealOrder') }}">
+          <th name="id">{{ order.id }}</th>
+          <th>{{ order.content }}</th>
+          {% if order.is_anonymity == 0 %}
+            <th>{{ order.username }}</th>
+          {% else %}
+            <th>匿名</th>
+          {% endif %}
+          <th>{{ order.time }}</th>
+          <th>{{ order.position }}</th>
+          <th><button type="submit" name="actionName" value="deal" class='label label-success'><span class='glyphicon glyphicon-usd'></span> 交易</button>&nbsp;&nbsp;&nbsp;<button type="submit" name="actionName" value="letter" class='label label-info'><span class='glyphicon glyphicon-envelope'></span> 私信</button></th>
+        </form>
+        </tr>
       {% endfor %}
     </tbody>
   </table>

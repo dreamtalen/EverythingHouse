@@ -40,8 +40,10 @@ create table item (
     # 交易状态，新单子、交易中、执行中
     time text not null,
     # 生成时间
-    position text not null
+    position text not null,
     # 地点
+    dealername text
+    # 接单人
 );
 
 drop table if exists history;

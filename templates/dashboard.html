@@ -42,10 +42,10 @@
         </div>
         <div class="collapse navbar-collapse" id="menu_list">
           <ul class="nav navbar-nav">
-            <li onclick="loadPage(); $('#PAGE').load('{{ url_for('homePage') }}');loadPage('{{ url_for('homePage') }}')" class="menu_list_items active">
+            <li onclick="loadPage(); $('#PAGE').load('{{ url_for('homePage') }}');" class="menu_list_items active">
               <a href="#"><span class="glyphicon glyphicon-home"></span> 主页</a>
             </li>
-            <li onclick="loadPage(); $('#PAGE').load('{{ url_for('postOrder') }}');loadPage('{{ url_for('postOrder') }}')" class="menu_list_items">
+            <li onclick="loadPage(); $('#PAGE').load('{{ url_for('postOrder') }}');" class="menu_list_items">
               <a href="#"><span class="glyphicon glyphicon-send"></span> 投条</a>
             </li>
             <li onclick="loadPage(); $('#PAGE').load('{{ url_for('getOrder') }}');" class="menu_list_items">

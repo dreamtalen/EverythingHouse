@@ -5,5 +5,71 @@
     <div class="page-header">
         <h1><b>主页</b> <small>>>> BirdView of Yourself.</small></h1>
     </div>
+    <table class="table table-bordered table-hover">
+    <caption><h3><b>我的投条</b></h3></caption>
+    <thead>
+      <th>编号</th>
+      <th>内容说明</th>
+      <th>投条人</th>
+      <th>时间</th>
+      <th>地点</th>
+      <th>操作</th>
+    </thead>
+    <tbody>
+      {% for order in post_orders %}
+        {% if order.state == 0 %}
+          <tr class="success">
+        {% elif order.state == 1 %}
+          <tr class="warning">
+        {% else %}
+          <tr class="active">
+        {% endif %}
+        <th>{{ order.id }}</th>
+        <th>{{ order.content }}</th>
+        {% if order.is_anonymity == 0 %}
+          <th>{{ order.username }}</th>
+        {% else %}
+          <th>匿名</th>
+        {% endif %}
+        <th>{{ order.time }}</th>
+        <th>{{ order.position }}</th>
+        <th><button class='label label-danger'><span class='glyphicon glyphicon-trash'></span> 删除</button></th>
+          </tr>
+      {% endfor %}
+    </tbody>
+    </table>
+    <table class="table table-bordered table-hover">
+    <caption><h3><b>我的接单</b></h3></caption>
+    <thead>
+      <th>编号</th>
+      <th>内容说明</th>
+      <th>投条人</th>
+      <th>时间</th>
+      <th>地点</th>
+      <th>操作</th>
+    </thead>
+    <tbody>
+      {% for order in get_orders %}
+        {% if order.state == 0 %}
+          <tr class="success">
+        {% elif order.state == 1 %}
+          <tr class="warning">
+        {% else %}
+          <tr class="active">
+        {% endif %}
+        <th>{{ order.id }}</th>
+        <th>{{ order.content }}</th>
+        {% if order.is_anonymity == 0 %}
+          <th>{{ order.username }}</th>
+        {% else %}
+          <th>匿名</th>
+        {% endif %}
+        <th>{{ order.time }}</th>
+        <th>{{ order.position }}</th>
+        <th><button class='glyphicon glyphicon-envelope'></span> 私信</button></th>
+          </tr>
+      {% endfor %}
+    </tbody>
+    </table>
 </body>
 </html>

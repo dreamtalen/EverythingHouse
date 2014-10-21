@@ -21,7 +21,8 @@ create table item (
     is_anonymity integer default 0,
     state integer default 0,
     time text not null,
-    position text not null
+    position text not null,
+    dealername text
 );
 
 drop table if exists history;
