@@ -104,14 +104,20 @@ def getOrder():
 # 交易
 @app.route('/deal/<int:post_id>')
 def dealOrder(post_id):
+    error = None
     if session.get('logged_in'):
-        g.db.execute('update item set state = 1, dealername = ? where id = ?', [session['username'], post_id])
-        username = query_db('select username from item where id = ?', [post_id], one=True)
-        print username;
-        post_letter = session['username']+u"向你ID为"+str(post_id)+u"的订单发起交易，是否同意？###"
-        g.db.execute('update user set notification = ? where username = ?', [post_letter, username])
-        g.db.commit()
-        return redirect(url_for('getOrder'))
+        post_state = query_db('select state from item where id = ?', [post_id], one=True)
+        if post_state['state'] == 1:
+            error = "这个单子已经处于交易中！"
+        else:
+            g.db.execute('update item set state = 1, dealername = ? where id = ?', [session['username'], post_id])
+            g.db.commit()
+            username = query_db('select username from item where id = ?', [post_id], one=True)
+            post_letter = "###"+session['username']+u"向你ID为"+str(post_id)+u"的订单发起交易，是否同意？###"
+            print post_letter
+            g.db.execute('update user set notification = ? where username = ?', [post_letter, username])
+            g.db.commit()
+        return redirect(url_for('welcome'))
     else:
         return redirect(url_for('welcome'))
 

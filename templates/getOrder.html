@@ -6,6 +6,14 @@
     <h1><b>接单</b> <small>>>> Do one thing good daily.</small></h1>
   </div>
   <div class="row">
+    <div class="col-xs-10 col-sm-2 col-md-4 col-lg-4 pull-left">
+      {% if error %}
+          <br />
+        <div class="alert alert-danger" role="alert">
+          <p><strong>错误: </strong>{{ error }}</p>
+        </div>
+      {% endif %}
+    </div>
     <div class="input-group col-xs-10 col-sm-8 col-md-6 col-lg-4 pull-right">
       <input type="text" class="form-control">
       <span class="input-group-btn">
