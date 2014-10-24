@@ -32,7 +32,9 @@
     function showPosition (position) {
       url = "https://maps.google.com/maps/api/geocode/json?latlng="+position.coords.latitude+","+position.coords.longitude+"&sensor=false";
       $.getJSON(url, function(json) {
-        x.value = json.results[0].formatted_address;
+        var str = json.results[0].formatted_address;
+        var len = str.length;
+        x.value = str.substr(0, len-13);
       });
       // x.toggleClass("disabled");
     }

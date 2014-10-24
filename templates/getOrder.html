@@ -25,12 +25,12 @@
   <table class="table table-bordered table-hover">
     <caption><h3><b>订单列表</b></h3></caption>
     <thead>
-      <th>编号</th>
       <th>内容说明</th>
       <th>投条人</th>
       <th>时间</th>
       <th>地点</th>
       <th>操作</th>
+      <th>状态</th>
     </thead>
     <tbody>
       {% for order in orders %}
@@ -41,7 +41,6 @@
         {% else %}
           <tr class="active">
         {% endif %}
-          <th>{{ order.id }}</input></th>
           <th>{{ order.content }}</th>
           {% if order.is_anonymity == 0 %}
             <th>{{ order.username }}</th>
@@ -51,6 +50,13 @@
           <th>{{ order.time }}</th>
           <th>{{ order.position }}</th>
           <th><a href="deal/{{ order.id }}" +  class='label label-success'><span class='glyphicon glyphicon-usd'></span> 交易</a>&nbsp;&nbsp;&nbsp;<a href="deal/{{ order.id }}" class='label label-info'><span class='glyphicon glyphicon-envelope'></span> 私信</a></th>
+          {% if order.state == 0 %}
+            <th>未接单
+          {% elif order.state == 1 %}
+            <th>执行中
+          {% else %}
+            <th>已接单
+          {% endif %}</th>
         </tr>
       {% endfor %}
     </tbody>
