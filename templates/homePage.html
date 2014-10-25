@@ -25,13 +25,24 @@
           <tr class="active">
         {% endif %}
         <th>{{ order.id }}</th>
-        <th>{{ order.content }}</th>
+        <th>
+          {% if order.content[10] %}
+          <a href="#" onclick="$('.{{order.id}}all_content').slideToggle();" class="list-group-item" data-toggle="tooltip" data-placement="top" title="显示全部">
+            <h4>{{ order.content[:6] }}……</h4>
+          </a>
+          <p class="{{order.id}}all_content" style="display: none">{{ order.content }}</p>
+          {% else %}
+          <h4>{{ order.content }}</h4>
+          {% endif %}
+        </th>
         {% if order.is_anonymity == 0 %}
           <th>{{ order.username }}</th>
         {% else %}
           <th>匿名</th>
         {% endif %}
-        <th>{{ order.time }}</th>
+        <th>
+          {{ order.time }}
+        </th>
         <th>{{ order.position }}</th>
         <th><a class='label label-danger'><span class='glyphicon glyphicon-trash'></span> 删除</a></th>
           </tr>
@@ -58,7 +69,16 @@
           <tr class="active">
         {% endif %}
         <th>{{ order.id }}</th>
-        <th>{{ order.content }}</th>
+        <th>
+          {% if order.content[10] %}
+          <a href="#" onclick="$('.{{order.id}}all_content').slideToggle();" data-toggle="tooltip" data-placement="top" title="显示全部">
+            <h4>{{ order.content[:6] }}……</h4>
+          </a>
+          <p class="{{order.id}}all_content" style="display: none">{{ order.content }}</p>
+          {% else %}
+          <h4>{{ order.content }}</h4>
+          {% endif %}
+        </th>
         {% if order.is_anonymity == 0 %}
           <th>{{ order.username }}</th>
         {% else %}
@@ -71,5 +91,8 @@
       {% endfor %}
     </tbody>
     </table>
+    <script type="text/javascript">
+      $('.list-group-item').tooltip()
+    </script>
 </body>
 </html>

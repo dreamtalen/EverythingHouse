@@ -3,6 +3,7 @@
 import sqlite3
 import os
 from flask import *
+import time as time
 
 app = Flask(__name__)
 
@@ -60,6 +61,7 @@ def login():
         # g.db.commit()
     return render_template("welcome.html", error_l = error_l)
 
+# 注册。
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     error_r = None
@@ -86,9 +88,9 @@ def postOrder():
     if session.get('logged_in'):
         if request.method == 'POST':
             if request.form.get('is_anonymity'):
-                g.db.execute('insert into item (username, content, is_anonymity, position, time) values (?, ?, ?, ?, ?)', [session['username'], request.form['content'], request.form['is_anonymity'], request.form['position'], request.form['time']])
+                g.db.execute('insert into item (username, content, is_anonymity, position, time) values (?, ?, ?, ?, ?)', [session['username'], request.form['content'].strip(' '), request.form['is_anonymity'], request.form['position'], request.form['time']])
             else:
-                g.db.execute('insert into item (username, content, position, time) values (?, ?, ?, ?)', [session['username'], request.form['content'], request.form['position'], request.form['time']])
+                g.db.execute('insert into item (username, content, position, time) values (?, ?, ?, ?)', [session['username'], request.form['content'].strip(' '), request.form['position'], request.form['time']])
             g.db.commit()
             return redirect(url_for('welcome'))
         return render_template('postOrder.html')
@@ -99,6 +101,22 @@ def postOrder():
 @app.route('/get')
 def getOrder():
     orders = query_db('select * from item')
+    local_time_array = time.localtime()
+    for order in orders:
+        get_time_array = time.strptime(order['time'], u"%Y年%m月%d日%H时%M分")
+        if get_time_array.tm_year - local_time_array.tm_year == 0:
+            if get_time_array.tm_mon - local_time_array.tm_mon == 0:
+                if get_time_array.tm_mday - local_time_array.tm_mday == 0:
+                    if get_time_array.tm_mhour - local_time_array.tm_mhour == 0:
+                        order['time'] = str(local_time_array.tm_min-get_time_array.tm_min)+u"分前"
+                    else:
+                        order['time'] = str(local_time_array.tm_mhour-get_time_array.tm_mhour)+u"小时前"
+                else:
+                    order['time'] = str(local_time_array.tm_mday-get_time_array.tm_mday)+u"天前"
+            else:
+                order['time'] = str(local_time_array.tm_mon-get_time_array.tm_mon)+u"月前"
+        else:
+            order['time'] = str(local_time_array.tm_year-get_time_array.tm_year)+u"年前"
     return render_template('getOrder.html', orders = orders)
 
 # 交易
@@ -137,6 +155,37 @@ def homePage():
     if session.get('logged_in'):
         post_orders = query_db('select * from item where username = ?', [session['username']])
         get_orders = query_db('select * from item where dealername = ?', [session['username']])
+        local_time_array = time.localtime()
+        for order in post_orders:
+            post_time_array = time.strptime(order['time'], u"%Y年%m月%d日%H时%M分")
+            if post_time_array.tm_year - local_time_array.tm_year == 0:
+                if post_time_array.tm_mon - local_time_array.tm_mon == 0:
+                    if post_time_array.tm_mday - local_time_array.tm_mday == 0:
+                        if post_time_array.tm_mhour - local_time_array.tm_mhour == 0:
+                            order['time'] = str(local_time_array.tm_min-post_time_array.tm_min)+u"分前"
+                        else:
+                            order['time'] = str(local_time_array.tm_mhour-post_time_array.tm_mhour)+u"小时前"
+                    else:
+                        order['time'] = str(local_time_array.tm_mday-post_time_array.tm_mday)+u"天前"
+                else:
+                    order['time'] = str(local_time_array.tm_mon-post_time_array.tm_mon)+u"月前"
+            else:
+                post_orders[0]['time'] = str(local_time_array.tm_year-post_time_array.tm_year)+u"年前"
+        for order in get_orders:
+            get_time_array = time.strptime(order['time'], u"%Y年%m月%d日%H时%M分")
+            if get_time_array.tm_year - local_time_array.tm_year == 0:
+                if get_time_array.tm_mon - local_time_array.tm_mon == 0:
+                    if get_time_array.tm_mday - local_time_array.tm_mday == 0:
+                        if get_time_array.tm_mhour - local_time_array.tm_mhour == 0:
+                            order['time'] = str(local_time_array.tm_min-get_time_array.tm_min)+u"分前"
+                        else:
+                            order['time'] = str(local_time_array.tm_mhour-get_time_array.tm_mhour)+u"小时前"
+                    else:
+                        order['time'] = str(local_time_array.tm_mday-get_time_array.tm_mday)+u"天前"
+                else:
+                    order['time'] = str(local_time_array.tm_mon-get_time_array.tm_mon)+u"月前"
+            else:
+                order['time'] = str(local_time_array.tm_year-get_time_array.tm_year)+u"年前"
         return render_template('homePage.html', post_orders = post_orders, get_orders = get_orders)
     else:
         return redirect(url_for('welcome'))
