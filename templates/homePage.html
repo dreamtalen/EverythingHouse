@@ -1,98 +1,153 @@
-<html>
-<head>
-</head>
-<body>
-    <div class="page-header">
-        <h1><b>主页</b> <small>>>> BirdView of Yourself.</small></h1>
-    </div>
-    <table class="table table-bordered table-hover">
-    <caption><h3><b>我的投条</b></h3></caption>
-    <thead>
-      <th>编号</th>
-      <th>内容说明</th>
-      <th>投条人</th>
-      <th>时间</th>
-      <th>地点</th>
-      <th>操作</th>
-    </thead>
-    <tbody>
+{% extends "dashboard.html" %}
+{% block body %}
+  <div class="page-header">
+      <h1><b>主页</b> <small>>>> BirdView of Yourself.</small></h1>
+  </div>
+
+  <ul class="nav nav-tabs" id="my_gp" role="tablist">
+    <li role="presentation" class="active"><a href="#my_g" id="g_tab" role="tab" data-toggle="tab"><h4><b>Post <span class="glyphicon glyphicon-tags hidden-xs"></span></b></h4></a></li>
+    <li role="presentation"><a href="#my_p" id="p_tab" role="tab" data-toggle="tab"><h4><b>Get <span class="glyphicon glyphicon-briefcase hidden-xs"></span></b></h4></a></li>
+    <li role="presentation"><a href="#my_y" id="y_tab" role="tab" data-toggle="tab"><h4><b>Deal <span class="glyphicon glyphicon-record hidden-xs"></span></b></h4></a></li>
+  </ul>
+
+  <div id="my_gp_content" class="tab-content">
+    <div role="tabpanel" class="tab-pane fade active in" id="my_g" aria-labelledby="g_tab">
       {% for order in post_orders %}
         {% if order.state == 0 %}
-          <tr class="success">
+          <div class="panel panel-success">
         {% elif order.state == 1 %}
-          <tr class="warning">
+          <div class="panel panel-warning">
         {% else %}
-          <tr class="active">
+          <div class="panel panel-active">
         {% endif %}
-        <th>{{ order.id }}</th>
-        <th>
-          {% if order.content[10] %}
-          <a href="#" onclick="$('.{{order.id}}all_content').slideToggle();" class="list-group-item" data-toggle="tooltip" data-placement="top" title="显示全部">
-            <h4>{{ order.content[:6] }}……</h4>
-          </a>
-          <p class="{{order.id}}all_content" style="display: none">{{ order.content }}</p>
-          {% else %}
-          <h4>{{ order.content }}</h4>
+        <div class="panel-heading">
+          投条人：{% if order.is_anonymity == 0 %}{{ order.username }}
+          {% else %}匿名
           {% endif %}
-        </th>
-        {% if order.is_anonymity == 0 %}
-          <th>{{ order.username }}</th>
-        {% else %}
-          <th>匿名</th>
-        {% endif %}
-        <th>
-          {{ order.time }}
-        </th>
-        <th>{{ order.position }}</th>
-        <th><a class='label label-danger'><span class='glyphicon glyphicon-trash'></span> 删除</a></th>
-          </tr>
+          &nbsp;&nbsp;&nbsp;时间：{{ order.time }}
+          &nbsp;&nbsp;&nbsp;地点：{{ order.position }}
+        </div>
+          <div class="panel-body">
+            {% if order.content[10] %}
+            <span style="cursor:pointer;" onclick="$('.{{order.id}}all_content').slideToggle();">
+              <h4 class="{{order.id}}all_content">{{ order.content[:6] }}…… <span class="label label-primary">显示全部</span></h4>
+            </span>
+            <h5 class="{{order.id}}all_content" style="display: none">{{ order.content }}</h5>
+            {% else %}
+            <h4>{{ order.content }}</h4>
+            {% endif %}
+          </div>
+          <div class="panel-footer">
+            状态：
+            {% if order.state == 0 %}
+              未接单
+            {% elif order.state == 1 %}
+              执行中
+            {% else %}
+              已接单
+            {% endif %}
+            <div class="pull-right">
+              操作：
+              <a class='label label-default'><span class='glyphicon glyphicon-qrcode'></span> 二维码</a>&nbsp;&nbsp;&nbsp;&nbsp;
+              <a class='label label-danger'><span class='glyphicon glyphicon-trash'></span> 删除</a>
+            </div>
+          </div>
+        </div>
       {% endfor %}
-    </tbody>
-    </table>
-    <table class="table table-bordered table-hover">
-    <caption><h3><b>我的接单</b></h3></caption>
-    <thead>
-      <th>编号</th>
-      <th>内容说明</th>
-      <th>投条人</th>
-      <th>时间</th>
-      <th>地点</th>
-      <th>操作</th>
-    </thead>
-    <tbody>
+    </div>
+
+    <div role="tabpanel" class="tab-pane fade" id="my_p" aria-labelledby="p_tab">
       {% for order in get_orders %}
         {% if order.state == 0 %}
-          <tr class="success">
+          <div class="panel panel-success">
         {% elif order.state == 1 %}
-          <tr class="warning">
+          <div class="panel panel-warning">
         {% else %}
-          <tr class="active">
+          <div class="panel panel-active">
         {% endif %}
-        <th>{{ order.id }}</th>
-        <th>
-          {% if order.content[10] %}
-          <a href="#" onclick="$('.{{order.id}}all_content').slideToggle();" data-toggle="tooltip" data-placement="top" title="显示全部">
-            <h4>{{ order.content[:6] }}……</h4>
-          </a>
-          <p class="{{order.id}}all_content" style="display: none">{{ order.content }}</p>
-          {% else %}
-          <h4>{{ order.content }}</h4>
+        <div class="panel-heading">
+          投条人：{% if order.is_anonymity == 0 %}{{ order.username }}
+          {% else %}匿名
           {% endif %}
-        </th>
-        {% if order.is_anonymity == 0 %}
-          <th>{{ order.username }}</th>
-        {% else %}
-          <th>匿名</th>
-        {% endif %}
-        <th>{{ order.time }}</th>
-        <th>{{ order.position }}</th>
-        <th><a class='label label-primary'><span class='glyphicon glyphicon-envelope'></span> 私信</a></th>
-          </tr>
+          &nbsp;&nbsp;&nbsp;时间：{{ order.time }}
+          &nbsp;&nbsp;&nbsp;地点：{{ order.position }}
+        </div>
+          <div class="panel-body">
+            {% if order.content[10] %}
+            <span style="cursor:pointer;" onclick="$('.{{order.id}}all_content').slideToggle();">
+              <h4 class="{{order.id}}all_content">{{ order.content[:6] }}…… <span class="label label-primary">显示全部</span></h4>
+            </span>
+            <h5 class="{{order.id}}all_content" style="display: none">{{ order.content }}</h5>
+            {% else %}
+            <h4>{{ order.content }}</h4>
+            {% endif %}
+          </div>
+          <div class="panel-footer">
+            状态：
+            {% if order.state == 0 %}
+              未接单
+            {% elif order.state == 1 %}
+              执行中
+            {% else %}
+              已接单
+            {% endif %}
+            <div class="pull-right">
+              操作：
+              <a class='label label-primary'><span class='glyphicon glyphicon-envelope'></span> 私信</a>
+            </div>
+          </div>
+        </div>
       {% endfor %}
-    </tbody>
-    </table>
-    <script type="text/javascript">
-      $('.list-group-item').tooltip()
-    </script>
-</body>
-</html>
+    </div>
+
+    <div role="tabpanel" class="tab-pane fade" id="my_y" aria-labelledby="y_tab">
+      {% for order in deal_orders %}
+        {% if order.state == 0 %}
+          <div class="panel panel-success">
+        {% elif order.state == 1 %}
+          <div class="panel panel-warning">
+        {% else %}
+          <div class="panel panel-active">
+        {% endif %}
+        <div class="panel-heading">
+          投条人：{% if order.is_anonymity == 0 %}{{ order.username }}
+          {% else %}匿名
+          {% endif %}
+          &nbsp;&nbsp;&nbsp;时间：{{ order.time }}
+          &nbsp;&nbsp;&nbsp;地点：{{ order.position }}
+        </div>
+          <div class="panel-body">
+            {% if order.content[10] %}
+            <span style="cursor:pointer;" onclick="$('.{{order.id}}all_content').slideToggle();">
+              <h4 class="{{order.id}}all_content">{{ order.content[:6] }}…… <span class="label label-primary">显示全部</span></h4>
+            </span>
+            <h5 class="{{order.id}}all_content" style="display: none">{{ order.content }}</h5>
+            {% else %}
+            <h4>{{ order.content }}</h4>
+            {% endif %}
+          </div>
+          <div class="panel-footer">
+            状态：
+            {% if order.state == 0 %}
+              未接单
+            {% elif order.state == 1 %}
+              执行中
+            {% else %}
+              已接单
+            {% endif %}
+            <div class="pull-right">
+              操作：
+              <a class='label label-primary'><span class='glyphicon glyphicon-envelope'></span> 同意</a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    $('li#menu_list_hp').addClass("active");
+    // $('.tttshow').tooltip()
+    $('#my_gp a#my_g').tab('show')
+  </script>
+{% endblock %}

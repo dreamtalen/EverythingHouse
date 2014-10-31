@@ -1,16 +1,18 @@
-<html>
-<head>
-</head>
-<body>
+{% extends "dashboard.html" %}
+{% block body %}
   <div class="page-header">
     <h1><b>接单</b> <small>>>> Do one thing good daily.</small></h1>
   </div>
   <div class="row">
     <div class="col-xs-10 col-sm-2 col-md-4 col-lg-4 pull-left">
       {% if error %}
-          <br />
         <div class="alert alert-danger" role="alert">
-          <p><strong>错误: </strong>{{ error }}</p>
+          <p><strong>Error: </strong>{{ error }}</p>
+        </div>
+      {% endif %}
+      {% if success %}
+        <div class="alert alert-success" role="alert">
+          <p><strong>Success: </strong>{{ success }}</p>
         </div>
       {% endif %}
     </div>
@@ -22,53 +24,54 @@
       </span>
     </div>
   </div>
-  <table class="table table-bordered table-hover">
-    <caption><h3><b>订单列表</b></h3></caption>
-    <thead>
-      <th>内容说明</th>
-      <th>投条人</th>
-      <th>时间</th>
-      <th>地点</th>
-      <th>操作</th>
-      <th>状态</th>
-    </thead>
-    <tbody>
-      {% for order in orders %}
-        {% if order.state == 0 %}
-          <tr class="success">
-        {% elif order.state == 1 %}
-          <tr class="warning">
+
+  <br />
+
+  {% for order in orders %}
+    {% if order.state == 0 %}
+      <div class="panel panel-success">
+    {% elif order.state == 1 %}
+      <div class="panel panel-warning">
+    {% else %}
+      <div class="panel panel-active">
+    {% endif %}
+    <div class="panel-heading">
+      投条人：{% if order.is_anonymity == 0 %}{{ order.username }}
+      {% else %}匿名
+      {% endif %}
+      &nbsp;&nbsp;&nbsp;时间：{{ order.time }}
+      &nbsp;&nbsp;&nbsp;地点：{{ order.position }}
+    </div>
+      <div class="panel-body">
+        {% if order.content[10] %}
+        <span style="cursor:pointer;" onclick="$('.{{order.id}}all_content').slideToggle();">
+          <!-- <h4 class="tttshow {{order.id}}all_content" data-toggle="tooltip" data-placement="right" title="收起">{{ order.content[:6] }}……<span class="label label-primary">显示全部</span></h4> -->
+          <h4 class="{{order.id}}all_content">{{ order.content[:6] }}…… <span class="label label-primary">显示全部</span></h4>
+        </span>
+        <p class="{{order.id}}all_content" style="display: none">{{ order.content }}</p>
         {% else %}
-          <tr class="active">
+        <h4>{{ order.content }}</h4>
         {% endif %}
-          <th>
-            {% if order.content[10] %}
-            <a href="#" onclick="$('.{{order.id}}all_content').slideToggle();" data-toggle="tooltip" data-placement="top" title="显示全部">
-              <h4>{{ order.content[:6] }}……</h4>
-            </a>
-            <p class="{{order.id}}all_content" style="display: none">{{ order.content }}</p>
-            {% else %}
-            <h4>{{ order.content }}</h4>
-            {% endif %}
-          </th>
-          {% if order.is_anonymity == 0 %}
-            <th>{{ order.username }}</th>
-          {% else %}
-            <th>匿名</th>
-          {% endif %}
-          <th>{{ order.time }}</th>
-          <th>{{ order.position }}</th>
-          <th><a href="deal/{{ order.id }}" +  class='label label-success'><span class='glyphicon glyphicon-usd'></span> 交易</a>&nbsp;&nbsp;&nbsp;<a href="deal/{{ order.id }}" class='label label-info'><span class='glyphicon glyphicon-envelope'></span> 私信</a></th>
-          {% if order.state == 0 %}
-            <th>未接单
-          {% elif order.state == 1 %}
-            <th>执行中
-          {% else %}
-            <th>已接单
-          {% endif %}</th>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-</body>
-</html>
+      </div>
+      <div class="panel-footer">
+        状态：
+        {% if order.state == 0 %}
+          未接单
+        {% elif order.state == 1 %}
+          执行中
+        {% else %}
+          已接单
+        {% endif %}
+        <div class="pull-right">
+          操作：
+          <a href="deal/{{ order.id }}" class='label label-success'><span class='glyphicon glyphicon-usd'></span> 交易</a>&nbsp;&nbsp;&nbsp;
+          <a href="deal/{{ order.id }}" class='label label-info'><span class='glyphicon glyphicon-envelope'></span> 私信</a>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+
+  <script type="text/javascript">
+    $('li#menu_list_go').addClass("active");
+  </script>
+{% endblock %}

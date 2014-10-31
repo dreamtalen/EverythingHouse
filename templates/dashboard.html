@@ -1,118 +1,144 @@
 <!DOCTYPE html>
-<html lang="zh-cn">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>{{ session['username'] }} - 万事屋</title>
-    <script>
-      document.write("<div id='loading' style='z-index:1035;padding:5px 0 5px 9px;background:#c44;left:0;top:0;width:90px;color:#fff;position:fixed;'>正在加载...</div>")
-      setTimeout("document.getElementById('loading').innerHTML = '加载失败，网络错误！';", 3000)
-    </script>
-    <script>
-      function loadPage(page) {
-        document.getElementById('loading').innerHTML = "正在加载...";
-        $('#loading').show();
-        document.getElementById('loading').innerHTML = "加载完成！";
-        setTimeout("$('#loading').slideUp();", 1000);
-      };
-    </script>
-    <style type="text/css">
-      .navbar-header {
-        padding-left: 100px;
-        min-width: 300px;
-      }
-      #PAGE {
-        padding-top: 55px;
-      }
-    </style>
-  </head>
-  <body>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>{{ session['username'] }} - 万事屋</title>
+  <script>
+    document.write("<div id='loading' style='z-index:1035;padding:5px 0 5px 9px;background:#c44;left:0;top:0;width:90px;color:#fff;position:fixed;'>正在加载...</div>")
+    setTimeout("document.getElementById('loading').innerHTML = '加载失败，网络错误！';", 3000)
+  </script>
+  <style type="text/css">
+    .navbar-header {
+      padding-left: 100px;
+      min-width: 300px;
+    }
+    #PAGE {
+      padding-top: 55px;
+    }
+  </style>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap.min.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap-theme.min.css') }}">
+  <script type="text/javascript" src="{{ url_for('static', filename='jquery.min.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
 
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <a class="navbar-brand" href="">万事屋</a>
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#menu_list">
-            <span class="sr-only">菜单项</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-        </div>
-        <div class="collapse navbar-collapse" id="menu_list">
-          <ul class="nav navbar-nav">
-            <li onclick="loadPage(); $('#PAGE').load('{{ url_for('homePage') }}');" class="menu_list_items">
-              <a href="#"><span class="glyphicon glyphicon-home"></span> 主页</a>
-            </li>
-            <li onclick="loadPage(); $('#PAGE').load('{{ url_for('postOrder') }}');" class="menu_list_items">
-              <a href="#"><span class="glyphicon glyphicon-send"></span> 投条</a>
-            </li>
-            <li onclick="loadPage(); $('#PAGE').load('{{ url_for('getOrder') }}');" class="menu_list_items">
-              <a href="#"><span class="glyphicon glyphicon-list-alt"></span> 接单</a>
-            </li>
-            <li onclick="loadPage(); $('#PAGE').load('{{ url_for('eventActivity') }}');" class="menu_list_items">
-              <a href="#"><span class="glyphicon glyphicon-star"></span> 活动</a>
-            </li>
-            <li onclick="loadPage(); $('#PAGE').load('{{ url_for('personalSetting') }}');" class="menu_list_items">
-              <a href="#"><span class="glyphicon glyphicon-cog"></span> 设定</a>
-            </li>
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">账号：{{ session['username'] }}<span class="caret"></span></a>
-              <ul class="dropdown-menu" role="menu">
-                <li><a href="#"><span class="glyphicon glyphicon-bell"></span> 个人通知 <span class="badge">{{ user['noticenum'] }}</span></a></li>
-                <li data-toggle="modal" data-target="#draft"><a href="#"><span class="glyphicon glyphicon-book"></span> 草稿本</a></li>
-                <li><a href="#"><span class="glyphicon glyphicon-floppy-remove"></span> 垃圾筒</a></li>
-                <li class="divider"></li>
-                <li><a href="#"><span class="glyphicon glyphicon-thumbs-up"></span> 好人卡 <span class="badge">{{ user['nicecard'] }}</span></a></li>
-                <li class="divider"></li>
-                <li><a href="{{ url_for('logout') }}"><span class="glyphicon glyphicon-off"></span> 退出</a></li>
-              </ul>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-
+  <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container-fluid">
-      <div class="col-md-8 col-md-offset-2" id="PAGE">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="">万事屋</a>
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#menu_list">
+          <span class="sr-only">菜单项</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <div class="collapse navbar-collapse" id="menu_list">
+        <ul class="nav navbar-nav">
+          <li id="menu_list_hp">
+            <a href="{{ url_for('homePage') }}"><span class="glyphicon glyphicon-home"></span> 主页</a>
+          </li>
+          <li id="menu_list_po">
+            <a href="{{ url_for('postOrder') }}"><span class="glyphicon glyphicon-send"></span> 投条</a>
+          </li>
+          <li id="menu_list_go">
+            <a href="{{ url_for('getOrder') }}"><span class="glyphicon glyphicon-list-alt"></span> 接单</a>
+          </li>
+          <li id="menu_list_ea">
+            <a href="{{ url_for('eventActivity') }}"><span class="glyphicon glyphicon-star"></span> 活动</a>
+          </li>
+          <li id="menu_list_ps">
+            <a href="{{ url_for('personalSetting') }}"><span class="glyphicon glyphicon-cog"></span> 设定</a>
+          </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">账号：{{ session['username'] }}<span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+              <li data-toggle="modal" data-target="#notifi"><a href="#"><span class="glyphicon glyphicon-bell"></span> 个人通知 <span class="badge">{{ user['noticenum'] }}</span></a></li>
+              <li data-toggle="modal" data-target="#draft"><a href="#"><span class="glyphicon glyphicon-book"></span> 草稿本</a></li>
+              <li><a href="#"><span class="glyphicon glyphicon-floppy-remove"></span> 垃圾筒</a></li>
+              <li data-toggle="modal" data-target="#camera"><a href="#"><span class="glyphicon glyphicon-camera"></span> 快速接单</a></li>
+              <li class="divider"></li>
+              <li><a href="#"><span class="glyphicon glyphicon-thumbs-up"></span> 好人卡 <span class="badge">{{ user['nicecard'] }}</span></a></li>
+              <li class="divider"></li>
+              <li><a href="{{ url_for('logout') }}"><span class="glyphicon glyphicon-off"></span> 退出</a></li>
+            </ul>
+          </li>
+        </ul>
       </div>
     </div>
+  </nav>
 
-    <div class="modal fade" id="draft" tabindex="-1" role="dialog" aria-labelledby="draftModal" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
-            <h4 class="modal-title" id="draftModal">草稿本 - 记录单子</h4>
-          </div>
-          <div class="modal-body">
-            <textarea class="form-control" style="resize: None" rows="3" placeholder="这里是空的。"></textarea>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
-            <button type="button" class="btn btn-success" data-dismiss="modal">保存</button>
-          </div>
+  <div class="container-fluid">
+    <div class="col-md-8 col-md-offset-2" id="PAGE">
+      {% block body %}{% endblock %}
+    </div>
+  </div>
+
+  <div class="modal fade" id="draft" tabindex="-1" role="dialog" aria-labelledby="draftModal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+          <h4 class="modal-title" id="draftModal">草稿本 - 记录单子</h4>
+        </div>
+        <div class="modal-body">
+          <textarea class="form-control" style="resize: None" rows="3" placeholder="这里是空的。"></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+          <button type="button" class="btn btn-success" data-dismiss="modal">保存</button>
         </div>
       </div>
     </div>
+  </div>
 
-    <footer>
-      
-    </footer>
-  </body>
+  <div class="modal fade" id="notifi" tabindex="-1" role="dialog" aria-labelledby="notifiModal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+          <h4 class="modal-title" id="notifiModal">个人通知</h4>
+        </div>
+        <div class="modal-body">
+          <ul class="list-group">
+            {% for noti in user['notification'].split("###") %}
+            {% endfor %}
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="camera" tabindex="-1" role="dialog" aria-labelledby="draftModal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+          <h4 class="modal-title" id="draftModal">快速接单 - 扫描二维码</h4>
+        </div>
+        <div class="modal-body">
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    
+  </footer>
   <!--
   <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
   <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
   <script src="http://cdn.bootcss.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
   -->
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap.min.css') }}">
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap-theme.min.css') }}">
-  <script type="text/javascript" src="{{ url_for('static', filename='jquery.min.js') }}"></script>
-  <script type="text/javascript" src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
   <script type="text/javascript">
     $(document).ready(function() {
         $("li.menu_list_items").click(function() {
@@ -129,4 +155,3 @@
         setTimeout("$('#loading').slideToggle();", 1000);
     });
   </script>
-</html>

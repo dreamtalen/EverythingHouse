@@ -1,9 +1,16 @@
-<html>
-<head>
-</head>
-<body>
+{% extends "dashboard.html" %}
+{% block body %}
     <div class="page-header">
         <h1><b>设定</b> <small>>>> Personal Setting.</small></h1>
     </div>
-</body>
-</html>
+    <div class="jumbotron" align="center" background="black">
+        <h1><b>个人信息</b></h1>
+        <h3>姓名</h3>
+        <h3>性别</h3>
+        <h3>专业</h3>
+        <h3>称号</h3>
+    </div>
+    <script type="text/javascript">
+        $('li#menu_list_ps').addClass("active");
+    </script>
+{% endblock %}

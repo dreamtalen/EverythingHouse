@@ -30,8 +30,7 @@ def teardown_request(exception):
 @app.route('/')
 def welcome():
     if session.get('logged_in'):
-        user = query_db('select * from user where username = ?', [session['username']], one=True)
-        return render_template('dashboard.html', user = user)
+        return redirect(url_for('homePage'))
     else:
         return redirect(url_for('login'))
 
@@ -86,85 +85,120 @@ def logout():
 @app.route('/post', methods=['GET', 'POST'])
 def postOrder():
     if session.get('logged_in'):
+        user = query_db('select * from user where username = ?', [session['username']], one=True)
+        user['notification'] = user['notification'].split('###')
         if request.method == 'POST':
             if request.form.get('is_anonymity'):
                 g.db.execute('insert into item (username, content, is_anonymity, position, time) values (?, ?, ?, ?, ?)', [session['username'], request.form['content'].strip(' '), request.form['is_anonymity'], request.form['position'], request.form['time']])
             else:
                 g.db.execute('insert into item (username, content, position, time) values (?, ?, ?, ?)', [session['username'], request.form['content'].strip(' '), request.form['position'], request.form['time']])
             g.db.commit()
-            return redirect(url_for('welcome'))
-        return render_template('postOrder.html')
+            return render_template('postOrder.html', user = user)
+        return render_template('postOrder.html', user = user)
     else:
         return redirect(url_for('welcome'))
 
 # 接单表。
 @app.route('/get')
 def getOrder():
-    orders = query_db('select * from item')
-    local_time_array = time.localtime()
-    for order in orders:
-        get_time_array = time.strptime(order['time'], u"%Y年%m月%d日%H时%M分")
-        if get_time_array.tm_year - local_time_array.tm_year == 0:
-            if get_time_array.tm_mon - local_time_array.tm_mon == 0:
-                if get_time_array.tm_mday - local_time_array.tm_mday == 0:
-                    if get_time_array.tm_mhour - local_time_array.tm_mhour == 0:
-                        order['time'] = str(local_time_array.tm_min-get_time_array.tm_min)+u"分前"
+    if session.get('logged_in'):
+        error = None
+        if request.args.get('error'):
+            error = request.args.get('error')
+        success = None
+        if request.args.get('success'):
+            success = request.args.get('success')
+        user = query_db('select * from user where username = ?', [session['username']], one=True)
+        user['notification'] = user['notification'].split('###')
+        orders = query_db('select * from item')
+        orders.reverse()
+        local_time_array = time.localtime()
+        for order in orders:
+            get_time_array = time.strptime(order['time'], u"%Y年%m月%d日%H时%M分")
+            if get_time_array.tm_year - local_time_array.tm_year == 0:
+                if get_time_array.tm_mon - local_time_array.tm_mon == 0:
+                    if get_time_array.tm_mday - local_time_array.tm_mday == 0:
+                        if get_time_array.tm_hour - local_time_array.tm_hour == 0:
+                            order['time'] = str(local_time_array.tm_min-get_time_array.tm_min)+u"分钟前"
+                        else:
+                            order['time'] = str(local_time_array.tm_hour-get_time_array.tm_hour)+u"小时前"
                     else:
-                        order['time'] = str(local_time_array.tm_mhour-get_time_array.tm_mhour)+u"小时前"
+                        order['time'] = str(local_time_array.tm_mday-get_time_array.tm_mday)+u"天前"
                 else:
-                    order['time'] = str(local_time_array.tm_mday-get_time_array.tm_mday)+u"天前"
+                    order['time'] = str(local_time_array.tm_mon-get_time_array.tm_mon)+u"月前"
             else:
-                order['time'] = str(local_time_array.tm_mon-get_time_array.tm_mon)+u"月前"
-        else:
-            order['time'] = str(local_time_array.tm_year-get_time_array.tm_year)+u"年前"
-    return render_template('getOrder.html', orders = orders)
+                order['time'] = str(local_time_array.tm_year-get_time_array.tm_year)+u"年前"
+        return render_template('getOrder.html', orders = orders, user = user, error = error, success = success)
+    else:
+        return redirect(url_for('welcome'))
 
 # 交易
 @app.route('/deal/<int:post_id>')
 def dealOrder(post_id):
     error = None
+    success = None
     if session.get('logged_in'):
         post_state = query_db('select state from item where id = ?', [post_id], one=True)
         if post_state['state'] == 1:
-            error = "这个单子已经处于交易中！"
-        else:
+            error = u"这个单子已经处于交易中！"
+            return redirect(url_for('getOrder', error = error))
+        elif post_state['state'] == 0:
+            username = query_db('select username from item where id = ?', [post_id], one=True)
+            if username['username'] == session['username']:
+                error = u"你不能接受自己的投条！"
+                return redirect(url_for('getOrder', error = error))
             g.db.execute('update item set state = 1, dealername = ? where id = ?', [session['username'], post_id])
             g.db.commit()
-            username = query_db('select username from item where id = ?', [post_id], one=True)
-            post_letter = "###"+session['username']+u"向你ID为"+str(post_id)+u"的订单发起交易，是否同意？###"
-            print post_letter
-            g.db.execute('update user set notification = ? where username = ?', [post_letter, username])
+            post_letter = session['username']+u"向你ID为"+str(post_id)+u"的订单发起交易。###"
+            g.db.execute('update user set notification = ? where username = ?', [post_letter, username['username']])
             g.db.commit()
-        return redirect(url_for('welcome'))
+        return redirect(url_for('getOrder', success = u"操作成功~"))
     else:
         return redirect(url_for('welcome'))
 
 # 活动页面。
 @app.route('/event')
 def eventActivity():
-    return render_template('eventActivity.html')
+    if session.get('logged_in'):
+        user = query_db('select * from user where username = ?', [session['username']], one=True)
+        user['notification'] = user['notification'].split('###')
+        return render_template('eventActivity.html', user = user)
+    else:
+        return render_template('eventActivity.html')
 
 # 个人设置页面。
 @app.route('/setting')
 def personalSetting():
-    return render_template('personalSetting.html')
+    if session.get('logged_in'):
+        user = query_db('select * from user where username = ?', [session['username']], one=True)
+        user['notification'] = user['notification'].split('###')
+        return render_template(
+            'personalSetting.html', user = user)
+    else:
+        return render_template('personalSetting.html')
 
 # 主页页面。
 @app.route('/home')
 def homePage():
     if session.get('logged_in'):
+        user = query_db('select * from user where username = ?', [session['username']], one=True)
+        user['notification'] = user['notification'].split('###')
         post_orders = query_db('select * from item where username = ?', [session['username']])
         get_orders = query_db('select * from item where dealername = ?', [session['username']])
+        deal_orders = query_db('select * from item where username = ? and state = 1', [session['username']])
+        post_orders.reverse();
+        get_orders.reverse();
+        deal_orders.reverse();
         local_time_array = time.localtime()
         for order in post_orders:
             post_time_array = time.strptime(order['time'], u"%Y年%m月%d日%H时%M分")
             if post_time_array.tm_year - local_time_array.tm_year == 0:
                 if post_time_array.tm_mon - local_time_array.tm_mon == 0:
                     if post_time_array.tm_mday - local_time_array.tm_mday == 0:
-                        if post_time_array.tm_mhour - local_time_array.tm_mhour == 0:
-                            order['time'] = str(local_time_array.tm_min-post_time_array.tm_min)+u"分前"
+                        if post_time_array.tm_hour - local_time_array.tm_hour == 0:
+                            order['time'] = str(local_time_array.tm_min-post_time_array.tm_min)+u"分钟前"
                         else:
-                            order['time'] = str(local_time_array.tm_mhour-post_time_array.tm_mhour)+u"小时前"
+                            order['time'] = str(local_time_array.tm_hour-post_time_array.tm_hour)+u"小时前"
                     else:
                         order['time'] = str(local_time_array.tm_mday-post_time_array.tm_mday)+u"天前"
                 else:
@@ -176,17 +210,32 @@ def homePage():
             if get_time_array.tm_year - local_time_array.tm_year == 0:
                 if get_time_array.tm_mon - local_time_array.tm_mon == 0:
                     if get_time_array.tm_mday - local_time_array.tm_mday == 0:
-                        if get_time_array.tm_mhour - local_time_array.tm_mhour == 0:
-                            order['time'] = str(local_time_array.tm_min-get_time_array.tm_min)+u"分前"
+                        if get_time_array.tm_hour - local_time_array.tm_hour == 0:
+                            order['time'] = str(local_time_array.tm_min-get_time_array.tm_min)+u"分钟前"
                         else:
-                            order['time'] = str(local_time_array.tm_mhour-get_time_array.tm_mhour)+u"小时前"
+                            order['time'] = str(local_time_array.tm_hour-get_time_array.tm_hour)+u"小时前"
                     else:
                         order['time'] = str(local_time_array.tm_mday-get_time_array.tm_mday)+u"天前"
                 else:
                     order['time'] = str(local_time_array.tm_mon-get_time_array.tm_mon)+u"月前"
             else:
                 order['time'] = str(local_time_array.tm_year-get_time_array.tm_year)+u"年前"
-        return render_template('homePage.html', post_orders = post_orders, get_orders = get_orders)
+        for order in deal_orders:
+            get_time_array = time.strptime(order['time'], u"%Y年%m月%d日%H时%M分")
+            if get_time_array.tm_year - local_time_array.tm_year == 0:
+                if get_time_array.tm_mon - local_time_array.tm_mon == 0:
+                    if get_time_array.tm_mday - local_time_array.tm_mday == 0:
+                        if get_time_array.tm_hour - local_time_array.tm_hour == 0:
+                            order['time'] = str(local_time_array.tm_min-get_time_array.tm_min)+u"分钟前"
+                        else:
+                            order['time'] = str(local_time_array.tm_hour-get_time_array.tm_hour)+u"小时前"
+                    else:
+                        order['time'] = str(local_time_array.tm_mday-get_time_array.tm_mday)+u"天前"
+                else:
+                    order['time'] = str(local_time_array.tm_mon-get_time_array.tm_mon)+u"月前"
+            else:
+                order['time'] = str(local_time_array.tm_year-get_time_array.tm_year)+u"年前"
+        return render_template('homePage.html', post_orders = post_orders, get_orders = get_orders, deal_orders = deal_orders, user = user)
     else:
         return redirect(url_for('welcome'))
 
