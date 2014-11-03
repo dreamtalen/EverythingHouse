@@ -16,6 +16,7 @@
       padding-top: 55px;
     }
   </style>
+  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap.min.css') }}">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap-theme.min.css') }}">
   <script type="text/javascript" src="{{ url_for('static', filename='jquery.min.js') }}"></script>
@@ -52,14 +53,15 @@
         </ul>
         <ul class="nav navbar-nav navbar-right">
           <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">账号：{{ session['username'] }}<span class="caret"></span></a>
+            <a href="#" onclick="$('#newMsg').popover('destroy');" class="dropdown-toggle" data-toggle="dropdown"><span  data-toggle="popover" data-placement="bottom" data-trigger="manual" title="新消息！" data-content="你收到了新消息~" id="newMsg"> 个人账号：{{ session['username'] }}</span><span class="caret"></span></a>
             <ul class="dropdown-menu" role="menu">
-              <li data-toggle="modal" data-target="#notifi"><a href="#"><span class="glyphicon glyphicon-bell"></span> 个人通知 <span class="badge">{{ user['noticenum'] }}</span></a></li>
+              <li data-toggle="modal" data-target="#notifi"><a href="#"><span class="glyphicon glyphicon-bell"></span> 个人通知 <span class="badge" id="notifiBadge">{{ user['noticenum'] }}</span></a></li>
               <li data-toggle="modal" data-target="#draft"><a href="#"><span class="glyphicon glyphicon-book"></span> 草稿本</a></li>
               <li><a href="#"><span class="glyphicon glyphicon-floppy-remove"></span> 垃圾筒</a></li>
               <li data-toggle="modal" data-target="#camera"><a href="#"><span class="glyphicon glyphicon-camera"></span> 快速接单</a></li>
               <li class="divider"></li>
               <li><a href="#"><span class="glyphicon glyphicon-thumbs-up"></span> 好人卡 <span class="badge">{{ user['nicecard'] }}</span></a></li>
+              <li><a href="#"><span class="glyphicon glyphicon-heart"></span> 信誉度 <span class="badge">{{ user['honor'] }}</span></a></li>
               <li class="divider"></li>
               <li><a href="{{ url_for('logout') }}"><span class="glyphicon glyphicon-off"></span> 退出</a></li>
             </ul>
@@ -101,13 +103,21 @@
           <h4 class="modal-title" id="notifiModal">个人通知</h4>
         </div>
         <div class="modal-body">
-          <ul class="list-group">
-            {% for noti in user['notification'].split("###") %}
-            {% endfor %}
+          <ul class="list-group" id="ulMsg">
+            {% if user['notification'] %}
+              {% for noti in user['notification'] %}
+                {% if noti %}
+                <li class="list-group-item">{{ noti }}</li>
+                {% endif %}
+              {% endfor %}
+              {% else %}
+                <li class="list-group-item">空。</li>
+            {% endif %}
           </ul>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+          <a href="{{ url_for('clearNotification') }}" type="button" class="btn btn-primary">清除</a>
         </div>
       </div>
     </div>
@@ -154,4 +164,18 @@
         document.getElementById('loading').innerHTML = "加载完成！";
         setTimeout("$('#loading').slideToggle();", 1000);
     });
+    $(function(){
+      var num = {{ user.noticenum }};
+      setInterval(function() {
+        $.get("{{ url_for('refresh') }}", function(result) {
+          if (result["num"] > num) {
+            num = result["num"];
+            $('#newMsg').popover('show');
+            $('#ulMsg').prepend('<li class="list-group-item"><b>NEW!</b>&nbsp;&nbsp;&nbsp;'+result["value"]+'</li>')
+            $('#notifiBadge').html(num);
+          };
+        });
+      }, 3000); 
+      // 10秒等待
+    }); 
   </script>

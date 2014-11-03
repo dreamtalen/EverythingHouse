@@ -7,11 +7,11 @@ create table user (
     # 用户名
     password text not null,
     # 密码
-    honor integer default 0,
+    honor integer default 1,
     # 个人信誉度
     complain text,
     # 投诉内容和时间
-    nicecard integer not null default 0,
+    nicecard integer not null default 5,
     # 好人卡数量
     noticenum integer not null default 0,
     # 个人通知的数量
@@ -21,6 +21,8 @@ create table user (
     # 草稿箱的内容
     rubbish text,
     # 垃圾筒的内容
+    time text,
+    # 最后一次签到的时间
 );
 
 drop table if exists item;

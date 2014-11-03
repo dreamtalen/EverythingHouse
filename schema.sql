@@ -3,13 +3,14 @@ create table user (
     id integer primary key autoincrement,
     username text not null,
     password text not null,
-    honor integer default 0,
+    honor real default 1,
     complain text,
-    nicecard integer not null default 0,
+    nicecard integer not null default 5,
     noticenum integer not null default 0,
     notification text,
     draft text,
-    rubbish text
+    rubbish text,
+    time text
 );
 
 drop table if exists item;
