@@ -278,7 +278,7 @@ def finishOrder(order_id, level):
         if user['notification']:
             user['notification'] = user['notification'].split('###')
 
-        dealername = query_db('select dealername from item where id = ?', [order_id], one=True);
+        dealername = query_db('select dealername, nicecard from item where id = ?', [order_id], one=True);
         username = dealername['dealername']
         if level == 1:
             post_letter = session['username']+u"完成了交易，给了你好评~\(≧▽≦)/~，单号为"+str(order_id)+u"。###"
@@ -292,15 +292,14 @@ def finishOrder(order_id, level):
             g.db.execute('update user set notification = ?, noticenum = ? where username = ?', [post_letter_old['notification']+post_letter, noticenum['noticenum']+1, username])
         else:
             g.db.execute('update user set notification = ?, noticenum = ? where username = ?', [post_letter, noticenum['noticenum']+1, username])
-        honor_old = query_db('select honor from user where username = ?', [username], one=True)
+        honor_old = query_db('select honor, nicecard from user where username = ?', [username], one=True)
         if level == 1:
-            honor_old = honor_old['honor'] * 1.05
+            honor_old['honor'] = honor_old['honor'] * 1.05
         elif level == 2:
-            honor_old = honor_old['honor'] * 1
+            honor_old['honor'] = honor_old['honor'] * 1
         else:
-            honor_old = honor_old['honor'] * 0.95
-        nicecard = query_db('select nicecard from item where id = ?', [order_id], one=True);
-        g.db.execute('update user set honor = ?, nicecard = ? where username = ?', [honor_old, nicecard['nicecard'], username])
+            honor_old['honor'] = honor_old['honor'] * 0.95
+        g.db.execute('update user set honor = ?, nicecard = ? where username = ?', [honor_old['honor'], dealername['nicecard']+honor_old['nicecard'], username])
         g.db.execute('update item set state = ? where id = ?', [2, order_id]);
         
         g.db.commit();
